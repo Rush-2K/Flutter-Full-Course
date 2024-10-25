@@ -13,20 +13,23 @@ class GradientContainer extends StatelessWidget {
   @override
   Widget build(context) {
     return Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                colorOne,
-                colorTwo,
-              ],
-              begin: startAlignment,
-              end: endAlignment,
-            ),
-          ),
-          child: const Center(
-            child: StyledText('Hello Rush!'),
-          ),
-        );
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            colorOne,
+            colorTwo,
+          ],
+          begin: startAlignment,
+          end: endAlignment,
+        ),
+      ),
+      child: Center(
+        child: Image.asset(
+          'assets/images/dice-1.png',
+          width: 200,
+        ),
+      ),
+    );
   }
 }
 //   class GradientContainer extends StatelessWidget {
