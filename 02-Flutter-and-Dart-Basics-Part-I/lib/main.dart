@@ -8,13 +8,18 @@ void main() {
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Color.fromARGB(255, 157, 59, 182),
-                Color.fromARGB(255, 170, 107, 185),
+                Color.fromARGB(255, 153, 10, 189),
+                Color.fromARGB(255, 183, 141, 194),
               ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
           ),
           child: const Center(
-            child: Text('Welcome Siri'),
+            child: Text('Welcome Siri', style: TextStyle(
+              color: Colors.white,
+              fontSize: 28.0,
+            )),
           ),
         ),
       ),
