@@ -12,7 +12,7 @@ class ExpensesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.builder(  //allow us to add only the visible data for scrollview
       itemCount: expenses.length,
       itemBuilder: (ctx, index) => ExpenseItem(expenses[index]),
     );

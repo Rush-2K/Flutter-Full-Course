@@ -4,7 +4,7 @@ import 'package:app_04_expense_tracker/models/expense.dart';
 class ExpenseItem extends StatelessWidget {
   const ExpenseItem(this.expense, {super.key});
 
-  final Expense expense;
+  final Expense expense; //defining the constructor class of Expense
 
   @override
   Widget build(BuildContext context) {
