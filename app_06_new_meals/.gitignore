@@ -25,3 +25,5 @@ web/
 android/
 ios/
 test/
+
+.DS_Store
