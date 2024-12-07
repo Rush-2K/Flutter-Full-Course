@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app_07_shopping_list/models/category.dart';
 
+//this is a map
 const categories = {
   Categories.vegetables: Category(
     'Vegetables',
