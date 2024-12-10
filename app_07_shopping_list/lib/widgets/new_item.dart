@@ -1,5 +1,8 @@
-import 'package:app_07_shopping_list/models/grocery_item.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:http/http.dart' as http;
 
 import 'package:app_07_shopping_list/data/categories.dart';
 import 'package:app_07_shopping_list/models/category.dart';
@@ -18,17 +21,59 @@ class _NewItemState extends State<NewItem> {
   var _enteredName = '';
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
+  String? firebaseUrl;
 
-  void _saveItem() {
+  // Load the configuration from the assets
+  Future<void> loadConfig() async {
+    // Load the JSON file from assets
+    final String configString =
+        await rootBundle.loadString('assets/config.json');
+    // Parse it into a Map
+    final Map<String, dynamic> config = jsonDecode(configString);
+    print(config);
+    setState(() {
+      firebaseUrl = config['firebaseUrl']; // Set the loaded URL in the state
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadConfig();
+  }
+
+  void _saveItem() async {
+    if (firebaseUrl == null) {
+      return;
+    }
+
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      Navigator.of(context).pop(
-        GroceryItem(
-            id: DateTime.now().toString(),
-            name: _enteredName,
-            quantity: _enteredQuantity,
-            category: _selectedCategory),
+      final url = Uri.https(
+        firebaseUrl!,
+        'shopping-list.json',
       );
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            'name': _enteredName,
+            'quantity': _enteredQuantity,
+            'category': _selectedCategory.title,
+          },
+        ),
+      );
+
+      print(response.body);
+      print(response.statusCode);
+
+      if (!context.mounted) {
+        return;
+      }
+      Navigator.of(context).pop();
     }
   }
 
