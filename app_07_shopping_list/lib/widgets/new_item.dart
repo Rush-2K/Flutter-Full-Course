@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app_07_shopping_list/models/grocery_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -6,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:app_07_shopping_list/data/categories.dart';
 import 'package:app_07_shopping_list/models/category.dart';
+import 'package:app_07_shopping_list/assets/asset_loader.dart';
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -22,24 +24,22 @@ class _NewItemState extends State<NewItem> {
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
   String? firebaseUrl;
+  var _isSending = false;
 
-  // Load the configuration from the assets
-  Future<void> loadConfig() async {
-    // Load the JSON file from assets
-    final String configString =
-        await rootBundle.loadString('assets/config.json');
-    // Parse it into a Map
-    final Map<String, dynamic> config = jsonDecode(configString);
-    print(config);
-    setState(() {
-      firebaseUrl = config['firebaseUrl']; // Set the loaded URL in the state
-    });
+  Future<void> _loadFirebaseUrl() async {
+    final assetLoader = AssetLoader();
+    final url = await assetLoader.loadFirebaseUrl();
+    setState(
+      () {
+        firebaseUrl = url; // Store the URL in the state
+      },
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    loadConfig();
+    _loadFirebaseUrl();
   }
 
   void _saveItem() async {
@@ -49,6 +49,9 @@ class _NewItemState extends State<NewItem> {
 
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      setState(() {
+        _isSending = true;
+      });
       final url = Uri.https(
         firebaseUrl!,
         'shopping-list.json',
@@ -67,13 +70,16 @@ class _NewItemState extends State<NewItem> {
         ),
       );
 
-      print(response.body);
-      print(response.statusCode);
+      final Map<String, dynamic> resData = json.decode(response.body);
 
       if (!context.mounted) {
         return;
       }
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(GroceryItem(
+          id: resData['name'],
+          name: _enteredName,
+          quantity: _enteredQuantity,
+          category: _selectedCategory));
     }
   }
 
@@ -170,14 +176,22 @@ class _NewItemState extends State<NewItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () {
-                      _formKey.currentState!.reset();
-                    },
+                    onPressed: _isSending
+                        ? null
+                        : () {
+                            _formKey.currentState!.reset();
+                          },
                     child: const Text('Reset'),
                   ),
                   ElevatedButton(
-                    onPressed: _saveItem,
-                    child: const Text('Add Item'),
+                    onPressed: _isSending ? null : _saveItem,
+                    child: _isSending
+                        ? const SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Text('Add Item'),
                   ),
                 ],
               )
