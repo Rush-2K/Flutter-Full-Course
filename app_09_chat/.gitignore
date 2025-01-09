@@ -1,0 +1,31 @@
+# Dart package files
+.packages
+.dart_tool/
+
+# Flutter build files
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+.flutter-*
+build/
+analysis_options.yaml
+pubspec.lock
+quiz_app.iml
+
+
+# IDE files
+.idea/
+.vscode/
+
+# Platform folders
+linux/
+macos/
+windows/
+web/
+android/
+ios/
+test/
+
+.DS_Store
+config.json
+*.iml
