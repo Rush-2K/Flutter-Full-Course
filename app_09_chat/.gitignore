@@ -11,6 +11,7 @@ build/
 analysis_options.yaml
 pubspec.lock
 quiz_app.iml
+firebase_options.dart
 
 
 # IDE files
